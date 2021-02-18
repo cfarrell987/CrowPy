@@ -23,7 +23,9 @@ def crowbot():
         )
         for member in guild.members:
             print(member)
-        overlord = guild.get_member('Crow#2174')
+
+        global members
+        members = '\n - '.join([member.name for member in guild.members])
 
     @client.event
     async def on_message(message):
@@ -50,6 +52,9 @@ def crowbot():
             await message.channel.send(response)
         if any(item in message.content.lower() for item in caw_message_intake):
             response = 'CA CAW!!'
+            await message.channel.send(response)
+        if message.content.startswith('!members'):
+            response = members
             await message.channel.send(response)
 
     client.run(TOKEN)
