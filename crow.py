@@ -25,6 +25,7 @@ def crowbot():
             print(member)
 
         global members
+
         members = '\n - '.join([member.name for member in guild.members])
 
     @client.event
