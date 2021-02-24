@@ -3,11 +3,10 @@ from discord.ext import commands
 import json
 
 #TODO 2021-02-24 caleb:
-# - convert from CLIENT to BOT
-# - change over basic text based commands to actual discord API commands
-# - create method to call for message - response interactions
+# - change over basic text based commands to actual discord API commands(Semi Completed)
+# - create method to call for message - response interactions (WTF did I mean by this?)
 # - collect heartbeat data from MC server and display it's status with a command (probably something like !MCStatus)
-# - add Initial start flag for initial start flag
+# - add Initial start flag for the first run of the bot to generate configuration.json, and prompt for token,prefix etc.
 # - transfer logic from old python script to new one
 
 ##INIT##
