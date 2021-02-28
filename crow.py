@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.utils import get
 import json
 
 #TODO 2021-02-24 caleb:
@@ -25,7 +26,7 @@ class Greetings(commands.Cog):
 		self._last_member = None
 
 # Intents
-intents = discord.Intents.default()
+intents = discord.Intents().all()
 
 bot = commands.Bot(command_prefix=prefix, intents = intents)
 
@@ -68,6 +69,14 @@ async def members(ctx):
 
     await ctx.channel.send(members)
 
+#bartenderRole = get(discord.Guild.roles, id=794666590532665345)
+
+@bot.command(name="bartender", aliases=["drinks"])
+async def bartender(ctx):
+    await ctx.channel.send("Test")
+ #   print(bartenderRole)
+    
+
 
 @bot.event
 async def on_message(message):
@@ -87,7 +96,7 @@ async def on_message(message):
             '@Crow is the best crow'
     ]
     commands = [
-            '!members',
+           #Done '!members',
             '!bartender',
             '!admin',
             '!mod',
@@ -101,9 +110,6 @@ async def on_message(message):
         await message.channel.send(response)
     if message.content.startswith('!members'):
         response = members
-        await message.channel.send(response)
-    if message.content.startswith('!bartender'):
-        response = f'{bartender} you are being called!'
         await message.channel.send(response)
     if message.content.startswith('!admin'):
         response = f'{admin} You are needed'
