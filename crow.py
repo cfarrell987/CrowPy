@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
+from pretty_help import PrettyHelp
 import json
 
 # TODO 2021-02-24 caleb:
@@ -9,6 +10,8 @@ import json
 # - collect heartbeat data from MC server and display it's status with a command (probably something like !MCStatus)
 # - add Initial start flag for the first run of the bot to generate configuration.json, and prompt for token,prefix etc.
 # - transfer logic from old python script to new one
+# <- (Pretty much done, will check again before adding crowold.py to gitignore)
+
 
 # #INIT# #
 
@@ -19,27 +22,24 @@ with open("configuration.json", "r") as config:
     prefix = data["prefix"]
     server = data["server"]
 
-
-class Greetings(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self._last_member = None
-
-
 bartenderRole = '<@&794666590532665345>'
-admin = '<@&794628837891768340>'
-mod = '<@&794687361329266690>'
+adminRole = '<@&794628837891768340>'
+modRole = '<@&794687361329266690>'
 
 # Intents
 intents = discord.Intents().all()
 
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
-# Load cogs
+# Setting up Help Command Stuff
+colorHelp = discord.Color.dark_blue()
+bot.help_command = PrettyHelp(color=colorHelp)
+
+
 initial_extensions = [
     "Cogs.onCommandError",
-    "Cogs.help",
-    "Cogs.ping"
+    #"Cogs.help",
+    #"Cogs.ping"
 ]
 
 print(initial_extensions)
@@ -51,8 +51,8 @@ if __name__ == '__main__':
         except Exception as e:
             print(f"Failed to load extension {extension}")
 
-
 # #RUNNING# #
+
 
 @bot.event
 async def on_ready():
@@ -70,18 +70,46 @@ async def on_ready():
     print(discord.__version__)
 
 
-@bot.command(name="members", aliases=["users", "mem"])
-async def members(ctx):
-    await ctx.channel.send(members)
+class Commands(commands.Cog, name="Commands", description="List of Commands"):
+    @commands.command(
+        name="members",
+        aliases=["users", "mem"],
+        help="Lists all members in the server",
+        brief="List members"
+    )
+    async def members(ctx):
+        await ctx.channel.send(members)
 
+    @commands.command(
+        name="bartender",
+        aliases=["drinks"],
+        help="Pings for the bartenders of the server",
+        brief="Pings for the bartenders of the server"
+                 )
+    async def bartender(ctx):
+        await ctx.channel.send(f"{bartenderRole} You are needed!")
+        # print(bartenderRole)
 
-# bartenderRole = get(discord.Guild.roles, id=794666590532665345)
+    @commands.command(
+        name="admin",
+        aliases=["owner"],
+        help="Pings for the administrator/Owner of the server",
+        brief="Pings for the admins/Owner of the server"
 
+                )
+    async def admin(ctx):
+        await ctx.channel.send(f"{adminRole} You are needed!")
+        # print(bartenderRole)
 
-@bot.command(name="bartender", aliases=["drinks"])
-async def bartender(ctx):
-    await ctx.channel.send(f"{bartenderRole} You are needed!")
-    # print(bartenderRole)
+    @commands.command(
+        name="mod",
+        aliases=["moderator"],
+        help="Pings for the moderators of the server",
+        brief="Pings for the mods of the server"
+        )
+    async def mod(ctx):
+        await ctx.channel.send(f"{modRole} You are needed!")
+        # print(bartenderRole)@bot.command(
 
 
 @bot.event
@@ -101,27 +129,11 @@ async def on_message(message):
         'i\'m the best crow',
         '@Crow is the best crow'
     ]
-    commands = [
-        # '!members',
-        # '!bartender',
-        '!admin',
-        '!mod',
-        '!commands'
-    ]
     if message.author.id == 152993332526579712 and message.content.lower() == 'im the best':
         response = "Behold! The almighty Crow!"
         await message.channel.send(response)
     if any(item in message.content.lower() for item in caw_message_intake):
         response = 'CA CAW!!'
-        await message.channel.send(response)
-    if message.content.startswith('!members'):
-        response = members
-        await message.channel.send(response)
-    if message.content.startswith('!admin'):
-        response = f'{admin} You are needed'
-        await message.channel.send(response)
-    if message.content.startswith('!mod'):
-        response = f'{mod} You are needed'
         await message.channel.send(response)
     if message.content.startswith('!commands'):
         response = '\n'.join([item for item in commands])
@@ -129,4 +141,5 @@ async def on_message(message):
         await message.channel.send(response)
 
 
+bot.add_cog(Commands(bot))
 bot.run(token)
