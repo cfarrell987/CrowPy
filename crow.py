@@ -4,14 +4,12 @@ from discord.utils import get
 from pretty_help import PrettyHelp
 import json
 
-# TODO 2021-02-24 caleb:
-# - change over basic text based commands to actual discord API commands(Semi Completed)
-# - create method to call for message - response interactions (WTF did I mean by this?)
-# - collect heartbeat data from MC server and display it's status with a command (probably something like !MCStatus)
-# - add Initial start flag for the first run of the bot to generate configuration.json, and prompt for token,prefix etc.
-# - transfer logic from old python script to new one
-# <- (Pretty much done, will check again before adding crowold.py to gitignore)
-
+# TODO 2021-02-28 caleb:
+#  - create method to call for message - response interactions (WTF did I mean by this?)
+#  - collect heartbeat data from MC server and display it's status with a command (probably something like !MCStatus)
+#  - add Initial start flag for the first run of the bot to generate configuration.json, and prompt for token,prefix etc
+#  - Create DockerFile to AutoDeploy new bot updates
+#  - Create CI/CD Pipeline for deploying bot updates
 
 # #INIT# #
 
@@ -21,10 +19,6 @@ with open("configuration.json", "r") as config:
     token = data["token"]
     prefix = data["prefix"]
     server = data["server"]
-
-bartenderRole = '<@&794666590532665345>'
-adminRole = '<@&794628837891768340>'
-modRole = '<@&794687361329266690>'
 
 # Intents
 intents = discord.Intents().all()
@@ -38,8 +32,7 @@ bot.help_command = PrettyHelp(color=colorHelp)
 
 initial_extensions = [
     "Cogs.onCommandError",
-    #"Cogs.help",
-    #"Cogs.ping"
+    "Cogs.commands"
 ]
 
 print(initial_extensions)
@@ -68,49 +61,6 @@ async def on_ready():
     global members
     members = '\n - '.join([member.name for member in guild.members])
     print(discord.__version__)
-
-
-class Commands(commands.Cog, name="Commands", description="List of Commands"):
-    @commands.command(
-        name="members",
-        aliases=["users", "mem"],
-        help="Lists all members in the server",
-        brief="List members"
-    )
-    async def members(ctx):
-        await ctx.channel.send(members)
-
-    @commands.command(
-        name="bartender",
-        aliases=["drinks"],
-        help="Pings for the bartenders of the server",
-        brief="Pings for the bartenders of the server"
-                 )
-    async def bartender(ctx):
-        await ctx.channel.send(f"{bartenderRole} You are needed!")
-        # print(bartenderRole)
-
-    @commands.command(
-        name="admin",
-        aliases=["owner"],
-        help="Pings for the administrator/Owner of the server",
-        brief="Pings for the admins/Owner of the server"
-
-                )
-    async def admin(ctx):
-        await ctx.channel.send(f"{adminRole} You are needed!")
-        # print(bartenderRole)
-
-    @commands.command(
-        name="mod",
-        aliases=["moderator"],
-        help="Pings for the moderators of the server",
-        brief="Pings for the mods of the server"
-        )
-    async def mod(ctx):
-        await ctx.channel.send(f"{modRole} You are needed!")
-        # print(bartenderRole)@bot.command(
-
 
 @bot.event
 async def on_message(message):
@@ -141,5 +91,4 @@ async def on_message(message):
         await message.channel.send(response)
 
 
-bot.add_cog(Commands(bot))
 bot.run(token)

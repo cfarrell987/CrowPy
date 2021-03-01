@@ -18,5 +18,4 @@ class PingCog(commands.Cog, name="ping command"):
         await message.edit(content=f"🏓 Pong !  `{int(ping)} ms`")
 
 
-def setup(bot):
-    bot.add_cog(PingCog(bot))
+
