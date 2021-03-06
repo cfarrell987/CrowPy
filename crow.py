@@ -9,7 +9,6 @@ from pathlib import Path
 # TODO 2021-02-28 caleb:
 #  - create method to call for message - response interactions (WTF did I mean by this?)
 #  - collect heartbeat data from MC server and display it's status with a command (probably something like !MCStatus)
-#  - add Initial start flag for the first run of the bot to generate configuration.json, and prompt for token,prefix etc
 #  - Create DockerFile to AutoDeploy new bot updates
 #  - Create CI/CD Pipeline for deploying bot updates
 
@@ -22,7 +21,7 @@ if configFile.exists():
     pass
 else:
     print("No token found!")
-    inToken = input("Please ener your bot's token: ")
+    inToken = input("Please enter your bot's token: ")
     inServer = input("Please enter your ServerID: ")
     
     data= {
@@ -103,10 +102,5 @@ async def on_message(message):
     if any(item in message.content.lower() for item in caw_message_intake):
         response = 'CA CAW!!'
         await message.channel.send(response)
-    if message.content.startswith('!commands'):
-        response = '\n'.join([item for item in commands])
-        # print( '\n'.join(item for item in commands))
-        await message.channel.send(response)
-
 
 bot.run(token)
