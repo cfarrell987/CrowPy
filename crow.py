@@ -1,8 +1,10 @@
+
 import discord
 from discord.ext import commands
 from discord.utils import get
 from pretty_help import PrettyHelp
 import json
+from pathlib import Path
 
 # TODO 2021-02-28 caleb:
 #  - create method to call for message - response interactions (WTF did I mean by this?)
@@ -13,13 +15,29 @@ import json
 
 # #INIT# #
 
+configFile = Path(__file__).parent / "configuration.json"
+
+if configFile.exists():
 # Get configuration.json
-with open("configuration.json", "r") as config:
+    pass
+else:
+    print("No token found!")
+    inToken = input("Please ener your bot's token: ")
+    inServer = input("Please enter your ServerID: ")
+    
+    data= {
+        'token': inToken,
+        'prefix': '$',
+        'server': inServer
+    }
+    with open(configFile, 'w') as outfile:
+        json.dump(data, outfile)
+
+with open(configFile, "r") as config:
     data = json.load(config)
     token = data["token"]
     prefix = data["prefix"]
     server = data["server"]
-
 # Intents
 intents = discord.Intents().all()
 
